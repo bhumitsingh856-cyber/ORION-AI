@@ -1,9 +1,8 @@
-"use client"
-import { useUser } from "@clerk/nextjs";
-const ChatPage = () => {
-  const {user}=useUser();
+import {currentUser } from '@clerk/nextjs/server';
+const ChatPage = async() => {
+  const user=await currentUser(); 
   return (
-    <div className="flex justify-center flex-col gap-6 text-center items-center min-h-[60vh] px-4">
+    <div className="flex justify-center flex-col gap-6 text-center items-center h-full py-10 px-4">
       {/* Animated Logo */}
       <div className="relative mb-4">
         <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-3xl flex items-center justify-center shadow-[0_0_40px_rgba(59,130,246,0.5)] animate-pulse">
@@ -19,7 +18,7 @@ const ChatPage = () => {
         <div className="animate-fade-in">
           <span className="text-gray-100">Hi, </span>
           <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent animate-gradient">
-            {user?.username}
+            {user?.fullName}
           </span>
           <span className="inline-block animate-wave ml-2">👋</span>
         </div>

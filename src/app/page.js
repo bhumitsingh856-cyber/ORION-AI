@@ -1,8 +1,11 @@
 "use client";
-import { motion } from "framer-motion";
+import { motion, animate, delay } from "framer-motion";
 import Link from "next/link";
-import handleToggle from "@/utils/haptics";
+import handleToggle from "../utils/haptics.js";
+import { useState } from "react";
 const LandingPage = () => {
+  const [inView, setInView] = useState(false);
+
   return (
     <div className="min-h-screen font-normal bg-black relative overflow-hidden">
       {/* Enhanced Background effects */}
@@ -22,125 +25,168 @@ const LandingPage = () => {
       {/* Hero Section */}
       <div className="relative z-10 px-4 sm:px-6 lg:px-10 pt-20 sm:pt-32 pb-16 text-center">
         <div className="max-w-6xl mx-auto">
-          <h1 className="text-5xl sm:text-7xl lg:text-8xl bg-linear-to-b from-white via-white to-zinc-500 bg-clip-text text-transparent font-bold tracking-wide drop-shadow-[0_0_30px_rgba(255,255,255,0.3)]">
+          <motion.h1
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.3, ease: "backInOut" }}
+            exit={{ opacity: 0, y: -20 }}
+            className="text-5xl sm:text-7xl lg:text-8xl bg-linear-to-b from-white via-white to-zinc-500 bg-clip-text text-transparent font-bold tracking-wide drop-shadow-[0_0_30px_rgba(255,255,255,0.3)]"
+          >
             ORION STUDIO.
-          </h1>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl mt-4 bg-linear-to-b from-gray-100 to-gray-600 bg-clip-text text-transparent font-light tracking-[0.2em]">
+          </motion.h1>
+          <motion.h2
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.5, ease: "backInOut" }}
+            className="text-2xl sm:text-3xl lg:text-4xl mt-4 bg-linear-to-b from-gray-100 to-gray-600 bg-clip-text text-transparent font-light tracking-[0.2em]"
+          >
             MULTIMODAL AI WORKSPACE
-          </h2>
+          </motion.h2>
 
-          <p className="mt-8 sm:mt-12 max-w-3xl text-base sm:text-lg lg:text-xl text-gray-300 text-center mx-auto leading-relaxed">
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.7, ease: "backInOut" }}
+            className="mt-8 sm:mt-12 max-w-3xl text-base sm:text-lg lg:text-xl text-gray-300 text-center mx-auto leading-relaxed"
+          >
             Chat, retrieve knowledge from documents, search the web, analyze
             images, and generate content — all in one intelligent system.
-          </p>
+          </motion.p>
 
           {/* Enhanced CTA Buttons with gradient and effects */}
-          <div className="mt-12 sm:mt-16 flex flex-col sm:flex-row justify-center gap-4 sm:gap-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.9, ease: "backInOut" }}
+            className="mt-12 sm:mt-16 flex flex-col sm:flex-row justify-center gap-4 sm:gap-6"
+          >
             {/* <button className="relative px-10 sm:px-14 py-4 sm:py-5 bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500 hover:from-blue-500 hover:via-blue-400 hover:to-cyan-400 text-white font-semibold rounded-xl text-base sm:text-lg transition-all duration-300 hover:scale-105 shadow-[0_0_30px_rgba(59,130,246,0.6)] hover:shadow-[0_0_50px_rgba(59,130,246,0.8)] overflow-hidden group">
               <span className="relative z-10">Start Chat</span>
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
             </button> */}
+
             <Link
-            href="/page1"
-            onClick={handleToggle}
-            className="relative px-10 sm:px-14 py-4 sm:py-5 bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-purple-600/20 hover:from-purple-600/30 hover:via-pink-600/30 hover:to-purple-600/30 border-2 border-purple-500/50 hover:border-purple-400 cursor-pointer text-gray-200 hover:text-white font-semibold rounded-xl text-base sm:text-lg transition-all duration-300 hover:scale-105 shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:shadow-[0_0_40px_rgba(168,85,247,0.6)] backdrop-blur-sm overflow-hidden group">
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.9, ease: "backInOut" }}
+              href="/page1"
+              onClick={handleToggle}
+              className="relative px-10 sm:px-14 py-4 sm:py-5 bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-purple-600/20 hover:from-purple-600/30 hover:via-pink-600/30 hover:to-purple-600/30 border-2 border-purple-500/50 hover:border-purple-400 cursor-pointer text-gray-200 hover:text-white font-semibold rounded-xl text-base sm:text-lg transition-all duration-300 hover:scale-105 shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:shadow-[0_0_40px_rgba(168,85,247,0.6)] backdrop-blur-sm overflow-hidden group"
+            >
               <span className="relative z-10">EXPLORE WORKSPACE</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-purple-400/20 to-transparent -translate-x-full group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-purple-400 to-transparent -translate-x-full group-hover:translate-x-[100%] transition-transform duration-1000"></div>
             </Link>
-          </div>
+          </motion.div>
 
           {/* Feature tags with cards */}
-         
-            <div className="mt-16  sm:mt-20 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 max-w-5xl mx-auto">
-              <motion.div
+
+          <div className="mt-16  sm:mt-20 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 max-w-5xl mx-auto">
+            <motion.div
               onClick={handleToggle}
-                initial={{ opacity: 0, y: 100 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.1, ease: "circOut" }}
-                viewport={{ once: true }}
-                className="bg-gradient-to-br hover:-translate-y-2  cursor-pointer  from-blue-500/10 to-cyan-500/10 backdrop-blur-sm border border-blue-500/30 rounded-xl p-4 sm:p-5 hover:border-blue-400/50 hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-all duration-300 hover:scale-105"
-              >
-                <div className="text-2xl sm:text-3xl mb-2">💬</div>
-                <p className="text-xs sm:text-sm text-gray-300 font-medium">
-                  Chat
-                </p>
-              </motion.div>
-              <motion.div
+              initial={{ opacity: 0, y: 100 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.3, ease: "backInOut" }}
+              viewport={{ once: true }}
+              className="bg-gradient-to-br hover:-translate-y-2  cursor-pointer  from-blue-500/10 to-cyan-500/10 backdrop-blur-sm border border-blue-500/30 rounded-xl p-4 sm:p-5 hover:border-blue-400/50 hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-all duration-300 hover:scale-105"
+            >
+              <div className="text-2xl sm:text-3xl mb-2">💬</div>
+              <p className="text-xs sm:text-sm text-gray-300 font-medium">
+                Chat
+              </p>
+            </motion.div>
+            <motion.div
               onClick={handleToggle}
-                initial={{ opacity: 0, y: 100 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.2 }}
-                viewport={{ once: true }}
-                className="bg-gradient-to-br hover:-translate-y-2  cursor-pointer  from-purple-500/10 to-pink-500/10 backdrop-blur-sm border border-purple-500/30 rounded-xl p-4 sm:p-5 hover:border-purple-400/50 hover:shadow-[0_0_20px_rgba(168,85,247,0.3)] transition-all duration-300 hover:scale-105"
-              >
-                <div className="text-2xl sm:text-3xl mb-2">📄</div>
-                <p className="text-xs sm:text-sm text-gray-300 font-medium">
-                  PDF RAG
-                </p>
-              </motion.div>
-              <motion.div
+              initial={{ opacity: 0, y: 100 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.4 , ease: "backInOut"}}
+              viewport={{ once: true }}
+              className="bg-gradient-to-br hover:-translate-y-2  cursor-pointer  from-purple-500/10 to-pink-500/10 backdrop-blur-sm border border-purple-500/30 rounded-xl p-4 sm:p-5 hover:border-purple-400/50 hover:shadow-[0_0_20px_rgba(168,85,247,0.3)] transition-all duration-300 hover:scale-105"
+            >
+              <div className="text-2xl sm:text-3xl mb-2">📄</div>
+              <p className="text-xs sm:text-sm text-gray-300 font-medium">
+                PDF RAG
+              </p>
+            </motion.div>
+            <motion.div
               onClick={handleToggle}
-                initial={{ opacity: 0, y: 100 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.3 }}
-                viewport={{ once: true }}
-                className="bg-gradient-to-br hover:-translate-y-2  cursor-pointer  from-green-500/10 to-emerald-500/10 backdrop-blur-sm border border-green-500/30 rounded-xl p-4 sm:p-5 hover:border-green-400/50 hover:shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all duration-300 hover:scale-105"
-              >
-                <div className="text-2xl sm:text-3xl mb-2">🌐</div>
-                <p className="text-xs sm:text-sm text-gray-300 font-medium">
-                  Web Search
-                </p>
-              </motion.div>
-              <motion.div
+              initial={{ opacity: 0, y: 100 }}
+              animate={{ opacity: 1, y: 0 }}
+               transition={{ duration: 0.3, delay: 0.5, ease: "backInOut" }}
+              viewport={{ once: true }}
+              className="bg-gradient-to-br hover:-translate-y-2  cursor-pointer  from-green-500/10 to-emerald-500/10 backdrop-blur-sm border border-green-500/30 rounded-xl p-4 sm:p-5 hover:border-green-400/50 hover:shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all duration-300 hover:scale-105"
+            >
+              <div className="text-2xl sm:text-3xl mb-2">🌐</div>
+              <p className="text-xs sm:text-sm text-gray-300 font-medium">
+                Web Search
+              </p>
+            </motion.div>
+            <motion.div
               onClick={handleToggle}
-                initial={{ opacity: 0, y: 100 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.4 }}
-                viewport={{ once: true }}
-                className="bg-gradient-to-br hover:-translate-y-2  cursor-pointer  from-orange-500/10 to-red-500/10 backdrop-blur-sm border border-orange-500/30 rounded-xl p-4 sm:p-5 hover:border-orange-400/50 hover:shadow-[0_0_20px_rgba(249,115,22,0.3)] transition-all duration-300 hover:scale-105"
-              >
-                <div className="text-2xl sm:text-3xl mb-2">🖼️</div>
-                <p className="text-xs sm:text-sm text-gray-300 font-medium">
-                  Image Analysis
-                </p>
-              </motion.div>
-              <motion.div
+              initial={{ opacity: 0, y: 100 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.6,ease: "backInOut"}}
+              viewport={{ once: true }}
+              className="bg-gradient-to-br hover:-translate-y-2  cursor-pointer  from-orange-500/10 to-red-500/10 backdrop-blur-sm border border-orange-500/30 rounded-xl p-4 sm:p-5 hover:border-orange-400/50 hover:shadow-[0_0_20px_rgba(249,115,22,0.3)] transition-all duration-300 hover:scale-105"
+            >
+              <div className="text-2xl sm:text-3xl mb-2">🖼️</div>
+              <p className="text-xs sm:text-sm text-gray-300 font-medium">
+                Image Analysis
+              </p>
+            </motion.div>
+            <motion.div
               onClick={handleToggle}
-                initial={{ opacity: 0, y: 100 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.5 }}
-                viewport={{ once: true }}
-                className="bg-gradient-to-br hover:-translate-y-2  cursor-pointer  from-pink-500/10 to-purple-500/10 backdrop-blur-sm border border-pink-500/30 rounded-xl p-4 sm:p-5 hover:border-pink-400/50 hover:shadow-[0_0_20px_rgba(236,72,153,0.3)] transition-all duration-300 hover:scale-105 col-span-2 sm:col-span-3 lg:col-span-1"
-              >
-                <div className="text-2xl sm:text-3xl mb-2">✨</div>
-                <p className="text-xs sm:text-sm text-gray-300 font-medium">
-                  Image Gen
-                </p>
-              </motion.div>
-            </div>
-         
+              initial={{ opacity: 0, y: 100 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.7 ,ease: "backInOut"}}
+              viewport={{ once: true }}
+              className="bg-gradient-to-br hover:-translate-y-2  cursor-pointer  from-pink-500/10 to-purple-500/10 backdrop-blur-sm border border-pink-500/30 rounded-xl p-4 sm:p-5 hover:border-pink-400/50 hover:shadow-[0_0_20px_rgba(236,72,153,0.3)] transition-all duration-300 hover:scale-105 col-span-2 sm:col-span-3 lg:col-span-1"
+            >
+              <div className="text-2xl sm:text-3xl mb-2">✨</div>
+              <p className="text-xs sm:text-sm text-gray-300 font-medium">
+                Image Gen
+              </p>
+            </motion.div>
+          </div>
         </div>
       </div>
 
       {/* Enhanced Glowing Divider */}
-      <div className="relative z-10 max-w-6xl mx-auto px-4 my-12">
+      <motion.div
+        initial={{ opacity: 0, scale: 0 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1, ease: "backInOut" }}
+        viewport={{ once: true, amount: 0.3 }}
+        className="relative z-10 max-w-6xl mx-auto px-4 my-12"
+      >
         <div className="relative h-[2px]">
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500 to-transparent"></div>
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-400 to-transparent blur-md"></div>
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400 to-transparent blur-lg"></div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Enhanced How it Works Section */}
       <div className="relative z-10 px-4 sm:px-6 lg:px-10 py-16 sm:py-24">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl text-center bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent font-bold mb-4">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, ease: "backInOut" }}
+            viewport={{ once: true, amount: 0.3 }}
+            className="text-3xl sm:text-4xl lg:text-5xl text-center bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent font-bold mb-4"
+          >
             How Orion Studio Works
-          </h2>
-          <p className="text-center text-gray-400 mb-12 sm:mb-16 max-w-2xl mx-auto">
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, ease: "backInOut" }}
+            viewport={{ once: true, amount: 0.3 }}
+            className="text-center text-gray-400 mb-12 sm:mb-16 max-w-2xl mx-auto"
+          >
             Experience seamless AI-powered workflows with intelligent routing
             and grounded responses
-          </p>
+          </motion.p>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 relative">
             {/* Connecting arrows for desktop */}
@@ -161,11 +207,10 @@ const LandingPage = () => {
 
             {/* Card 1 - Input */}
             <motion.div
-            onClick={handleToggle}
+              onClick={handleToggle}
               initial={{ opacity: 0, x: -200 }}
               whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.4, delay: 0.2, ease: "linear" }}
-              
+              transition={{ duration: 0.4, delay: 0.2, ease:"backInOut" }}
               className="relative bg-gradient-to-br hover:scale-105 cursor-pointer from-blue-500/10 via-blue-600/5 to-transparent backdrop-blur-xl border border-blue-500/30 rounded-2xl p-8 sm:p-10 hover:border-blue-400/60 hover:shadow-[0_0_40px_rgba(59,130,246,0.3)] transition-all duration-300 group overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -198,11 +243,10 @@ const LandingPage = () => {
 
             {/* Card 2 - Intelligent Routing */}
             <motion.div
-            onClick={handleToggle}
+              onClick={handleToggle}
               initial={{ opacity: 0, x: -200 }}
               whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.3, delay: 0.2, ease: "linear" }}
-              
+              transition={{ duration: 0.3, delay: 0.2, ease:"backInOut" }}
               className="relative bg-gradient-to-br hover:scale-105 cursor-pointer from-purple-500/10 via-purple-600/5 to-transparent backdrop-blur-xl border border-purple-500/30 rounded-2xl p-8 sm:p-10 hover:border-purple-400/60 hover:shadow-[0_0_40px_rgba(168,85,247,0.3)] transition-all duration-300 group overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -235,11 +279,10 @@ const LandingPage = () => {
 
             {/* Card 3 - Grounded Response */}
             <motion.div
-            onClick={handleToggle}
+              onClick={handleToggle}
               initial={{ opacity: 0, x: -200 }}
               whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.2, delay: 0, ease: "linear" }}
-              
+              transition={{ duration: 0.2, delay: 0, ease:"backInOut" }}
               className="relative bg-gradient-to-br hover:scale-105 cursor-pointer from-green-500/10 via-green-600/5 to-transparent backdrop-blur-xl border border-green-500/30 rounded-2xl p-8 sm:p-10 hover:border-green-400/60 hover:shadow-[0_0_40px_rgba(34,197,94,0.3)] transition-all duration-300 group overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -273,18 +316,29 @@ const LandingPage = () => {
 
           {/* Tech Stack */}
           <div className="mt-20 sm:mt-24 text-center">
-            <p className="text-gray-500 text-sm sm:text-base mb-4">
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 1, delay: 0.3, ease: "backInOut" }}
+              viewport={{ once: false, amount: 0.3 }}
+              className="text-gray-500 text-sm sm:text-base mb-4"
+            >
               Built with cutting-edge technologies
-            </p>
+            </motion.p>
             <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
               {["NEXT JS", "LANGCHAIN", "PINECONE", "TAVILY", "LLAMA"].map(
                 (tech, index) => (
-                  <span
+                  <motion.span
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1  }}
+                    transition={{ duration: 1, delay: 0.5, ease: "backInOut" }}
+                    viewport={{ once: false, amount: 0.3 }}
+                    onClick={handleToggle}
                     key={index}
                     className="px-4 hover:-translate-y-2 hover:scale-105 sm:px-6 py-2 cursor-pointer bg-gradient-to-r from-gray-800/50 to-gray-900/50 border border-gray-700/50 rounded-full text-gray-400 text-xs sm:text-sm backdrop-blur-sm hover:border-gray-600 hover:text-gray-300 transition-all duration-300"
                   >
                     {tech}
-                  </span>
+                  </motion.span>
                 ),
               )}
             </div>
