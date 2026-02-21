@@ -5,44 +5,57 @@ import { X } from "lucide-react";
 import handleToggle from "@/utils/haptics";
 import { usestudioStore } from "@/store/zustand";
 import { useParams } from "next/navigation";
+import axios from "axios";
 import getChat from "@/actions/getChat.action";
+
+import ReactMarkdown from "react-markdown";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
 
 const Chat = () => {
   // hooks
   const ref = useRef(null);
-  const {studio}=useParams();
-  const chatHistory=[];
+  const { studio } = useParams();
+  const chatHistory = [];
   const [doc, setDoc] = useState(null);
-  console.log(studio)
-
   // zustand store
-  const prompt=usestudioStore((state) => (state.prompt));
-  const setPrompt=usestudioStore((state) => (state.setPrompt));
-  const chat=usestudioStore((state) => (state.chat));
-  const setChat=usestudioStore((state) => (state.setChat));
-
+  const prompt = usestudioStore((state) => state.prompt);
+  const setPrompt = usestudioStore((state) => state.setPrompt);
+  const chat = usestudioStore((state) => state.chat);
+  const setChat = usestudioStore((state) => state.setChat);
+  const addchat = usestudioStore((state) => state.addChat);
   // functions
+  const appendusermessage = () => {
+    addchat({ role: "user", content: prompt });
+  };
   const scrollToBottom = () => {
     if (typeof window !== "undefined" && ref.current) {
       ref?.current?.scrollIntoView({ behavior: "smooth" });
     }
   };
-  const loadChat=async()=>{
-    const res=await getChat(studio);
-    console.log("chat",res)
-    if(res.success){
+  const loadChat = async () => {
+    const res = await getChat(studio);
+    console.log("chat", res);
+    if (res.success) {
       setChat(res.chat);
     }
-  }
-
+  };
+  const appendaimsg = async () => {
+    const res = await axios.post(`/api/langchain/${studio}`, {
+      prompt: prompt.trim(),
+    });
+    addchat(res.data);
+  };
   // Effects
-  useEffect(()=>{
+  useEffect(() => {
     loadChat();
-  },[studio])
+  }, [studio]);
 
   useEffect(() => {
     scrollToBottom();
-  }, [chat,studio]);
+  }, [chat, studio]);
   return (
     <div className="flex flex-col justify-between h-screen">
       <main className="flex-1 overflow-y-auto p-2 flex flex-col gap-2">
@@ -211,7 +224,7 @@ const Chat = () => {
           chat?.map((e) =>
             e.role === "user" ? (
               <div key={e._id} className="flex justify-end ">
-                <span className="bg-linear-to-r from-sky-500/20  to-purple-500/20 via-transparent   max-w-2xs  sm:max-w-4xl p-4 rounded-br-4xl rounded-l-2xl">
+                <span className="bg-linear-to-r from-sky-700 via-teal-600 to-black  max-w-2xs  sm:max-w-4xl p-4 rounded-br-4xl rounded-l-2xl">
                   {e.content}
                 </span>
               </div>
@@ -226,7 +239,145 @@ const Chat = () => {
                   </span>
                   <span className="font-bold">ORION</span>
                 </div>
-                <span>{e.content}</span>
+                <div>
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    rehypePlugins={[rehypeRaw]}
+                    components={{
+                      // 1. Handling Code Blocks (Fenced code)
+                      code({ node, inline, className, children, ...props }) {
+                        const match = /language-(\w+)/.exec(className || "");
+                        const language = match ? match[1] : "";
+
+                        return !inline && language ? (
+                          <div className="relative my-4 rounded-lg overflow-hidden border border-gray-700">
+                            {/* Language Label */}
+                            <div className="bg-gray-900 px-4 py-1.5 text-[10px] uppercase tracking-wider text-gray-400 font-mono border-b border-gray-700 flex justify-between items-center">
+                              {language}
+                            </div>
+
+                            {/* Syntax Highlighter */}
+                            <SyntaxHighlighter
+                              style={vscDarkPlus}
+                              language={language}
+                              PreTag="div"
+                              customStyle={{
+                                margin: 0,
+                                padding: "1rem",
+                                background: "#1e1e1e",
+                                fontSize: "0.875rem",
+                              }}
+                            >
+                              {String(children).replace(/\n$/, "")}
+                            </SyntaxHighlighter>
+
+                            {/* Copy Button */}
+                            <button
+                              onClick={() =>
+                                navigator.clipboard.writeText(String(children))
+                              }
+                              className="absolute top-10 right-2 bg-gray-800 hover:bg-gray-700 border border-gray-600 px-2 py-1 rounded text-[10px] text-white transition-all active:scale-95"
+                            >
+                              Copy
+                            </button>
+                          </div>
+                        ) : (
+                          <code
+                            className="bg-gray-800 text-cyan-400 px-1.5 py-0.5 rounded font-mono text-xs"
+                            {...props}
+                          >
+                            {children}
+                          </code>
+                        );
+                      },
+
+                      // 2. Prevent Hydration Error: Render 'p' as 'div'
+                      // This prevents block elements like <div> (from SyntaxHighlighter)
+                      // from being nested inside <p> tags.
+                      p({ children }) {
+                        return (
+                          <div className="mb-4 last:mb-0 leading-relaxed">
+                            {children}
+                          </div>
+                        );
+                      },
+
+                      // 3. Optimized Links
+                      a({ node, children, ...props }) {
+                        return (
+                          <a
+                            className="text-cyan-400 hover:text-cyan-300 underline underline-offset-4 transition-colors"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            {...props}
+                          >
+                            {children}
+                          </a>
+                        );
+                      },
+
+                      // 4. Headings
+                      h1: ({ children }) => (
+                        <h1 className="text-2xl font-bold mt-6 mb-2 text-white">
+                          {children}
+                        </h1>
+                      ),
+                      h2: ({ children }) => (
+                        <h2 className="text-xl font-bold mt-5 mb-2 text-white">
+                          {children}
+                        </h2>
+                      ),
+                      h3: ({ children }) => (
+                        <h3 className="text-lg font-semibold mt-4 mb-1 text-white">
+                          {children}
+                        </h3>
+                      ),
+
+                      // 5. Lists
+                      ul: ({ children }) => (
+                        <ul className="list-disc list-inside my-4 space-y-2">
+                          {children}
+                        </ul>
+                      ),
+                      ol: ({ children }) => (
+                        <ol className="list-decimal list-inside my-4 space-y-2">
+                          {children}
+                        </ol>
+                      ),
+                      li: ({ children }) => (
+                        <li className="ml-2 text-gray-200">{children}</li>
+                      ),
+
+                      // 6. Blockquotes
+                      blockquote: ({ children }) => (
+                        <blockquote className="border-l-4 border-cyan-500 bg-gray-900/50 px-4 py-2 my-4 italic text-gray-300 rounded-r">
+                          {children}
+                        </blockquote>
+                      ),
+
+                      // 7. Tables
+                      table: ({ children }) => (
+                        <div className="overflow-x-auto my-6 rounded-lg border border-gray-700">
+                          <table className="max-w-2xl divide-y divide-gray-700">
+                            {children}
+                          </table>
+                        </div>
+                      ),
+                      th: ({ children }) => (
+                        <th className="px-4 py-2 bg-gray-800 text-left text-xs font-semibold uppercase tracking-wider text-gray-300">
+                          {children}
+                        </th>
+                      ),
+                      td: ({ children }) => (
+                        <td className="px-4 py-2 border-t border-gray-700 text-sm text-gray-300">
+                          {children}
+                        </td>
+                      ),
+                    }}
+                  >
+                    {e.content}
+                  </ReactMarkdown>
+                </div>
                 {e.image && (
                   <div>
                     <img
@@ -291,7 +442,22 @@ const Chat = () => {
               accept="image/*, .pdf, .txt, .doc, .docx"
             />
           </label>
-          <button className="bg-linear-to-r relative cursor:pointer shrink-0 hover:shadow-[0_0_30px_blue]  hover:border-blue-500 font-bold flex hover:scale-105 duration-300 group overflow-hidden from-blue-600 border-2 to-sky-500 rounded-full  p-2 md:p-4">
+          <button
+            disabled={prompt.trim().length === 0}
+            onClick={() => {
+              appendusermessage();
+              appendaimsg();
+              setPrompt("");
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                appendusermessage();
+                appendaimsg();
+                setPrompt("");
+              }
+            }}
+            className={`${prompt.trim().length === 0 ? "cursor-not-allowed" : "cursor-pointer"} bg-linear-to-r relative  shrink-0 hover:shadow-[0_0_30px_blue]  hover:border-blue-500 font-bold flex hover:scale-105 duration-300 group overflow-hidden from-blue-600 border-2 to-sky-500 rounded-full  p-2 md:p-4`}
+          >
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent translate-x-[-100%] group-hover:translate-x-[100%] duration-500"></div>
             <span className="hover:scale-110 duration-300">Ask</span>
             <span className="hover:translate-x-2 duration-300">

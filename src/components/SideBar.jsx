@@ -9,7 +9,6 @@ function SideBar({ setShowBar, chatlist, addChatlist }) {
   const handleNewChat = async () => {
     handleToggle();
     const result = await createNewSpace();
-    console.log("result",result)
     if (result.success) { 
       addChatlist(result.chat);
       router.push(`/ostudio/${result.chat._id}`);

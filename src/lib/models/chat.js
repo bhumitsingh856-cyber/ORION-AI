@@ -7,13 +7,33 @@ const schema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    tittle: { type: String ,
-        default: "Untitled Conversation"
-    },
-    messages:{
-      type: Array,
-      default: []
-    },
+    tittle: { type: String, default: "Untitled Conversation" },
+    messages: [
+      {
+        role: {
+          type: String,
+          enum:["user", "assistant"],
+          required: true,
+        },
+        content: {
+          default: "",
+          type: String,
+        },
+        
+        image: {
+          type: String,
+          default: "",
+        },
+        doc: {
+          type: String,
+          default: "",
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
   },
   { timestamps: true },
 );
