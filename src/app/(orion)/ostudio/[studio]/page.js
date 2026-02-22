@@ -1,53 +1,109 @@
 "use client";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, memo } from "react";
 import { useUser } from "@clerk/nextjs";
+import IntentLoadingState from "@/components/Loadingresponse";
 import { X } from "lucide-react";
 import handleToggle from "@/utils/haptics";
 import { usestudioStore } from "@/store/zustand";
 import { useParams } from "next/navigation";
 import axios from "axios";
 import getChat from "@/actions/getChat.action";
+import { getindent } from "@/actions/indent.action.js";
+import Formatedllmresponse from "@/components/Formatedllmresponse";
+import EmptyChat from "@/components/EmptyChat";
+import { getRandom } from "@/utils/randomline";
+import { CldUploadWidget } from "next-cloudinary";
 
-import ReactMarkdown from "react-markdown";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
-import remarkGfm from "remark-gfm";
-import rehypeRaw from "rehype-raw";
+// ✅ Memoize message component to prevent re-renders
+const UserMessage = memo(({ content, userImage }) => (
+  <div className="flex gap-2 justify-end">
+    <span className="bg-gradient-to-r from-slate-700 to-slate-800 border border-slate-600/50 max-w-2xs sm:max-w-4xl p-3 px-4 rounded-br-2xl rounded-l-2xl">
+      {content}
+    </span>
+    <span>
+      <img
+        className="md:w-10 md:h-10 h-8 w-8 border-2 border-white/70 rounded-full"
+        src={userImage}
+        alt=""
+      />
+    </span>
+  </div>
+));
+
+const AIMessage = memo(({ content }) => (
+  <div className="max-w-4xl w-fit p-2 rounded-xl bg-black/30 rounded-bl-2xl rounded-r-2xl">
+    <div className="flex gap-2 items-center mb-4">
+      <span className="bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg h-7 w-7 p-4 flex justify-center items-center text-xl font-bold">
+        O
+      </span>
+      <span className="font-bold">ORION AI</span>
+    </div>
+    <div>
+      <Formatedllmresponse content={content} />
+    </div>
+  </div>
+));
+
+UserMessage.displayName = "UserMessage";
+AIMessage.displayName = "AIMessage";
 
 const Chat = () => {
   // hooks
   const ref = useRef(null);
+  const inputRef = useRef(null); // ✅ Uncontrolled input
   const { studio } = useParams();
-  const chatHistory = [];
   const [doc, setDoc] = useState(null);
-  // zustand store
-  const prompt = usestudioStore((state) => state.prompt);
-  const setPrompt = usestudioStore((state) => state.setPrompt);
+  const { user } = useUser();
+  const [indent, setIndent] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // ✅ Don't subscribe to chat in parent - only get the action
   const chat = usestudioStore((state) => state.chat);
   const setChat = usestudioStore((state) => state.setChat);
   const addchat = usestudioStore((state) => state.addChat);
-  // functions
-  const appendusermessage = () => {
-    addchat({ role: "user", content: prompt });
-  };
+
   const scrollToBottom = () => {
-    if (typeof window !== "undefined" && ref.current) {
-      ref?.current?.scrollIntoView({ behavior: "smooth" });
+    if (ref.current) {
+      ref.current.scrollIntoView({ behavior: "smooth" });
     }
   };
+
   const loadChat = async () => {
     const res = await getChat(studio);
-    console.log("chat", res);
     if (res.success) {
       setChat(res.chat);
     }
   };
-  const appendaimsg = async () => {
-    const res = await axios.post(`/api/langchain/${studio}`, {
-      prompt: prompt.trim(),
-    });
-    addchat(res.data);
+
+  const handleSend = async () => {
+    const promptValue = inputRef.current.value.trim();
+    
+    if (!promptValue || loading) return;
+
+    // Clear input immediately
+    inputRef.current.value = "";
+
+    // Add user message
+    addchat({ role: "user", content: promptValue });
+    setLoading(true);
+
+    // Get intent
+    const promptIndent = await getindent(promptValue);
+    setIndent(promptIndent);
+
+    try {
+      const res = await axios.post(`/api/langchain/${studio}`, {
+        prompt: promptValue,
+      });
+      addchat(res.data);
+    } catch (e) {
+      console.log("Error:", e.message);
+    } finally {
+      setLoading(false);
+      setIndent("");
+    }
   };
+
   // Effects
   useEffect(() => {
     loadChat();
@@ -55,368 +111,72 @@ const Chat = () => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [chat, studio]);
+  }, [chat.length]); // ✅ Only on length change
+
   return (
     <div className="flex flex-col justify-between h-screen">
-      <main className="flex-1 overflow-y-auto p-2 flex flex-col gap-2">
-        {chat.length === 0 && (
-          <div className="flex justify-center flex-col gap-8 text-center items-center h-screen">
-            {/* Animated Orion Logo */}
-            <div className="relative">
-              {/* The Main AI SVG */}
-              <svg
-                viewBox="0 0 100 100"
-                className="relative w-20 h-20 drop-shadow-2xl"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <defs>
-                  <linearGradient
-                    id="aiGradient"
-                    x1="0%"
-                    y1="0%"
-                    x2="100%"
-                    y2="100%"
-                  >
-                    <stop offset="0%" stopColor="#c084fc" /> {/* Purple-400 */}
-                    <stop offset="100%" stopColor="#22d3ee" /> {/* Cyan-400 */}
-                  </linearGradient>
-
-                  <filter id="innerGlow">
-                    <feFlood
-                      floodColor="white"
-                      floodOpacity="0.5"
-                      result="flood"
-                    />
-                    <feComposite
-                      in="flood"
-                      result="mask"
-                      in2="SourceGraphic"
-                      operator="in"
-                    />
-                    <feGaussianBlur stdDeviation="1" result="blur" />
-                    <feComposite
-                      in="SourceGraphic"
-                      in2="blur"
-                      operator="over"
-                    />
-                  </filter>
-                </defs>
-
-                {/* Outer Ring */}
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="45"
-                  stroke="url(#aiGradient)"
-                  strokeWidth="2"
-                  strokeDasharray="15 10"
-                  className="animate-[spin_10s_linear_infinite]"
-                />
-
-                {/* Inner Core Shapes */}
-                <path
-                  d="M50 25C36.1929 25 25 36.1929 25 50C25 63.8071 36.1929 75 50 75C63.8071 75 75 63.8071 75 50C75 36.1929 63.8071 25 50 25Z"
-                  fill="url(#aiGradient)"
-                  filter="url(#innerGlow)"
-                  className="animate-pulse"
-                />
-
-                {/* Center Star/Spark */}
-                <path
-                  d="M50 40L53 47L60 50L53 53L50 60L47 53L40 50L47 47L50 40Z"
-                  fill="white"
-                  className="animate-bounce"
-                />
-              </svg>
-              {/* Floating particles */}
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-400 rounded-full animate-ping"></div>
-              <div className="absolute -bottom-1 -left-1 w-2.5 h-2.5 bg-cyan-400 rounded-full animate-ping [animation-delay:0.5s]"></div>
-              <div className="absolute top-1/2 -right-2 w-2 h-2 bg-purple-400 rounded-full animate-ping [animation-delay:1s]"></div>
-            </div>
-
-            {/* Welcome Message */}
-            <div className="space-y-4 max-w-2xl px-4">
-              <h2 className="text-3xl md:text-4xl font-bold">
-                <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent">
-                  Ready for Magic ?
-                </span>
-              </h2>
-              <p className="text-lg text-gray-400">
-                Ask me anything, and I'll help you find answers, generate
-                content, or solve problems.
-              </p>
-            </div>
-
-            {/* Suggestion Prompts */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full max-w-2xl px-4">
-              <button className="text-left p-4 cursor-pointer bg-gradient-to-br from-stone-800/40 to-stone-800/20 hover:from-blue-500/20 hover:to-purple-500/20 border border-stone-700/50 hover:border-blue-500/50 rounded-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_25px_rgba(59,130,246,0.2)]">
-                <div className="flex items-start gap-3">
-                  <div className="text-2xl hover:scale-110 transition-transform">
-                    💡
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-gray-200 mb-1">
-                      Explain a concept
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      Break down complex topics
-                    </p>
-                  </div>
-                </div>
-              </button>
-              <button className="text-left p-4 cursor-pointer bg-gradient-to-br from-stone-800/40 to-stone-800/20 hover:from-blue-500/20 hover:to-purple-500/20 border border-stone-700/50 hover:border-blue-500/50 rounded-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_25px_rgba(59,130,246,0.2)]">
-                <div className="flex items-start gap-3">
-                  <div className="text-2xl hover:scale-110 transition-transform">
-                    ✍️
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-gray-200 mb-1">
-                      Write content
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      Create articles, emails, or posts
-                    </p>
-                  </div>
-                </div>
-              </button>
-
-              <button className="text-left p-4 cursor-pointer bg-gradient-to-br from-stone-800/40 to-stone-800/20 hover:from-blue-500/20 hover:to-purple-500/20 border border-stone-700/50 hover:border-blue-500/50 rounded-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_25px_rgba(59,130,246,0.2)]">
-                <div className="flex items-start gap-3">
-                  <div className="text-2xl hover:scale-110 transition-transform">
-                    💻
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-gray-200 mb-1">
-                      Help with code
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      Debug, optimize, or explain code
-                    </p>
-                  </div>
-                </div>
-              </button>
-
-              <button className="text-left p-4 cursor-pointer bg-gradient-to-br from-stone-800/40 to-stone-800/20 hover:from-blue-500/20 hover:to-purple-500/20 border border-stone-700/50 hover:border-blue-500/50 rounded-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_25px_rgba(59,130,246,0.2)]">
-                <div className="flex items-start gap-3">
-                  <div className="text-2xl hover:scale-110 transition-transform">
-                    🔍
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-gray-200 mb-1">
-                      Research topics
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      Find information and insights
-                    </p>
-                  </div>
-                </div>
-              </button>
-            </div>
-
-            {/* Helper Text */}
-            <p className="text-sm text-gray-600 mt-4">
-              Just type your question below to get started
-            </p>
-          </div>
+      <main className="flex-1 overflow-y-auto p-2 flex flex-col gap-4">
+        {chat.length === 0 ? (
+          <EmptyChat />
+        ) : (
+          <h1 className="w-fit mx-auto text-3xl font-bold bg-gradient-to-b from-white to-neutral-500 bg-clip-text text-transparent tracking-tight">
+            {getRandom([
+              "Orion is listening",
+              "The core is active",
+              "Consciousness initiated",
+              "Processing the infinite",
+            ])}
+          </h1>
         )}
-        {chat?.length > 0 &&
-          chat?.map((e) =>
-            e.role === "user" ? (
-              <div key={e._id} className="flex justify-end ">
-                <span className="bg-linear-to-r from-sky-700 via-teal-600 to-black  max-w-2xs  sm:max-w-4xl p-4 rounded-br-4xl rounded-l-2xl">
-                  {e.content}
-                </span>
-              </div>
-            ) : (
-              <div
-                key={e._id}
-                className=" max-w-4xl p-4 rounded-xl bg-black/30 rounded-bl-4xl rounded-r-2xl"
-              >
-                <div className="flex gap-2 items-center mb-2">
-                  <span className="bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg h-7 w-7 p-4 flex justify-center items-center text-xl font-bold">
-                    O
-                  </span>
-                  <span className="font-bold">ORION</span>
-                </div>
-                <div>
-                  <ReactMarkdown
-                    remarkPlugins={[remarkGfm]}
-                    rehypePlugins={[rehypeRaw]}
-                    components={{
-                      // 1. Handling Code Blocks (Fenced code)
-                      code({ node, inline, className, children, ...props }) {
-                        const match = /language-(\w+)/.exec(className || "");
-                        const language = match ? match[1] : "";
+        
+        {/* ✅ Memoized messages */}
+        {chat.map((e, idx) =>
+          e.role === "user" ? (
+            <UserMessage key={idx} content={e.content} userImage={user?.imageUrl} />
+          ) : (
+            <AIMessage key={idx} content={e.content} />
+          )
+        )}
 
-                        return !inline && language ? (
-                          <div className="relative my-4 rounded-lg overflow-hidden border border-gray-700">
-                            {/* Language Label */}
-                            <div className="bg-gray-900 px-4 py-1.5 text-[10px] uppercase tracking-wider text-gray-400 font-mono border-b border-gray-700 flex justify-between items-center">
-                              {language}
-                            </div>
-
-                            {/* Syntax Highlighter */}
-                            <SyntaxHighlighter
-                              style={vscDarkPlus}
-                              language={language}
-                              PreTag="div"
-                              customStyle={{
-                                margin: 0,
-                                padding: "1rem",
-                                background: "#1e1e1e",
-                                fontSize: "0.875rem",
-                              }}
-                            >
-                              {String(children).replace(/\n$/, "")}
-                            </SyntaxHighlighter>
-
-                            {/* Copy Button */}
-                            <button
-                              onClick={() =>
-                                navigator.clipboard.writeText(String(children))
-                              }
-                              className="absolute top-10 right-2 bg-gray-800 hover:bg-gray-700 border border-gray-600 px-2 py-1 rounded text-[10px] text-white transition-all active:scale-95"
-                            >
-                              Copy
-                            </button>
-                          </div>
-                        ) : (
-                          <code
-                            className="bg-gray-800 text-cyan-400 px-1.5 py-0.5 rounded font-mono text-xs"
-                            {...props}
-                          >
-                            {children}
-                          </code>
-                        );
-                      },
-
-                      // 2. Prevent Hydration Error: Render 'p' as 'div'
-                      // This prevents block elements like <div> (from SyntaxHighlighter)
-                      // from being nested inside <p> tags.
-                      p({ children }) {
-                        return (
-                          <div className="mb-4 last:mb-0 leading-relaxed">
-                            {children}
-                          </div>
-                        );
-                      },
-
-                      // 3. Optimized Links
-                      a({ node, children, ...props }) {
-                        return (
-                          <a
-                            className="text-cyan-400 hover:text-cyan-300 underline underline-offset-4 transition-colors"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            {...props}
-                          >
-                            {children}
-                          </a>
-                        );
-                      },
-
-                      // 4. Headings
-                      h1: ({ children }) => (
-                        <h1 className="text-2xl font-bold mt-6 mb-2 text-white">
-                          {children}
-                        </h1>
-                      ),
-                      h2: ({ children }) => (
-                        <h2 className="text-xl font-bold mt-5 mb-2 text-white">
-                          {children}
-                        </h2>
-                      ),
-                      h3: ({ children }) => (
-                        <h3 className="text-lg font-semibold mt-4 mb-1 text-white">
-                          {children}
-                        </h3>
-                      ),
-
-                      // 5. Lists
-                      ul: ({ children }) => (
-                        <ul className="list-disc list-inside my-4 space-y-2">
-                          {children}
-                        </ul>
-                      ),
-                      ol: ({ children }) => (
-                        <ol className="list-decimal list-inside my-4 space-y-2">
-                          {children}
-                        </ol>
-                      ),
-                      li: ({ children }) => (
-                        <li className="ml-2 text-gray-200">{children}</li>
-                      ),
-
-                      // 6. Blockquotes
-                      blockquote: ({ children }) => (
-                        <blockquote className="border-l-4 border-cyan-500 bg-gray-900/50 px-4 py-2 my-4 italic text-gray-300 rounded-r">
-                          {children}
-                        </blockquote>
-                      ),
-
-                      // 7. Tables
-                      table: ({ children }) => (
-                        <div className="overflow-x-auto my-6 rounded-lg border border-gray-700">
-                          <table className="max-w-2xl divide-y divide-gray-700">
-                            {children}
-                          </table>
-                        </div>
-                      ),
-                      th: ({ children }) => (
-                        <th className="px-4 py-2 bg-gray-800 text-left text-xs font-semibold uppercase tracking-wider text-gray-300">
-                          {children}
-                        </th>
-                      ),
-                      td: ({ children }) => (
-                        <td className="px-4 py-2 border-t border-gray-700 text-sm text-gray-300">
-                          {children}
-                        </td>
-                      ),
-                    }}
-                  >
-                    {e.content}
-                  </ReactMarkdown>
-                </div>
-                {e.image && (
-                  <div>
-                    <img
-                      className="rounded-lg max-w-3xl w-full"
-                      src={e.image}
-                      alt=""
-                    />
-                  </div>
-                )}
-              </div>
-            ),
-          )}
+        {loading && <IntentLoadingState loadingType={indent} />}
         <div ref={ref}></div>
       </main>
+
+      <div className="bg-gradient-to-r from-transparent via-gray-600 to-transparent h-[1px]"></div>
+
       <footer className="sticky bg-black p-2 bottom-0">
         {doc && (
-          <div className="flex max-w-xs w-fit duration-300 relative items-center gap-2 p-2 bg-zinc-700/50 rounded-lg  m-4">
+          <div className="flex max-w-xs w-fit duration-300 relative items-center gap-2 p-2 bg-zinc-700/50 rounded-lg m-4">
             <span className="text-2xl">📄</span>
             <span className="line-clamp-1">{doc.name.split(".")[0]}</span>
             <span>.{doc.name.split(".")[1]}</span>
             <div>
               <X
                 onClick={() => setDoc(null)}
-                className="bg-linear-to-r from-red-500 to-orange-600 rounded-[3px] hover:shadow-[0_0_20px_red]  hover:rounded-2xl hover:rotate-180 hover:scale-110 duration-300 hover:bg-zinc-600"
-              ></X>
+                className="bg-gradient-to-r from-red-500 to-orange-600 rounded-[3px] hover:shadow-[0_0_20px_red] hover:rounded-2xl hover:rotate-180 hover:scale-110 duration-300 hover:bg-zinc-600"
+              />
             </div>
           </div>
         )}
-        <div className="flex items-center relative md:gap-2 gap-1  md:mx-4 mx-2">
-          <input
+
+        <div className="flex items-center relative md:gap-2 gap-1 md:mx-4">
+          {/* ✅ Uncontrolled input - no state updates */}
+          <textarea
+            ref={inputRef}
             onClick={handleToggle}
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            className="w-full hover:scale-101 focus:border-sky-500 hover:shadow-[0_0_10px_gray] bg-stone-800/50 p-2 md:p-4 md:py-4 py-2 border-2 border-blue-500/30 duration-300 outline-none rounded-full "
-            type="text"
-            placeholder="Ask Orion"
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleSend();
+              }
+            }}
+            className="w-full resize-none field-sizing-content max-h-60 focus:border-sky-500 bg-stone-800/50 p-2 md:p-4 md:py-4 py-2 border-2 border-blue-500/30 duration-300 outline-none rounded-2xl"
+            placeholder="Ask Orion anything..."
+            disabled={loading}
           />
-          <label className="relative bg-linear-to-r cursor-pointer shrink-0 hover:border-green-400 hover:shadow-[0_0_30px_green] hover:scale-105 duration-300 font-bold flex group from-green-800 border-2 to-teal-500 rounded-full p-2 overflow-hidden md:p-4">
-            <div className="absolute duration-300 translate-x-[-100%] group-hover:translate-x-[100%] top-0 left-0 inset-0 bg-linear-to-r from-transparent via-white to-transparent"></div>
+
+          <label className="relative bg-gradient-to-r cursor-pointer shrink-0 hover:border-green-400 hover:shadow-[0_0_30px_green] hover:scale-105 duration-300 font-bold flex group from-green-800 border-2 to-teal-500 rounded-full p-2 overflow-hidden md:p-4">
+            <div className="absolute duration-300 translate-x-[-100%] group-hover:translate-x-[100%] top-0 left-0 inset-0 bg-gradient-to-r from-transparent via-white to-transparent"></div>
             <span className="hover:scale-105 duration-500 hover:-translate-y-2">
               <svg
                 width="24"
@@ -434,29 +194,31 @@ const Chat = () => {
                 />
               </svg>
             </span>
-            <input
-              type="file"
-              onClick={handleToggle}
-              onChange={(e) => setDoc(e.target.files[0])}
-              className="hidden"
-              accept="image/*, .pdf, .txt, .doc, .docx"
-            />
+            <CldUploadWidget
+              uploadPreset="orion_preset"
+              onSuccess={(results) => {
+                // Handle upload
+              }}
+              options={{
+                sources: ["local", "url", "google_drive"],
+                clientAllowedFormats: ["png", "pdf", "doc", "docx"],
+                maxFiles: 1,
+              }}
+            >
+              {({ open }) => (
+                <button
+                  type="button"
+                  onClick={() => open()}
+                  className="p-2 text-stone-400 hover:text-cyan-400 transition-colors"
+                />
+              )}
+            </CldUploadWidget>
           </label>
+
           <button
-            disabled={prompt.trim().length === 0}
-            onClick={() => {
-              appendusermessage();
-              appendaimsg();
-              setPrompt("");
-            }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                appendusermessage();
-                appendaimsg();
-                setPrompt("");
-              }
-            }}
-            className={`${prompt.trim().length === 0 ? "cursor-not-allowed" : "cursor-pointer"} bg-linear-to-r relative  shrink-0 hover:shadow-[0_0_30px_blue]  hover:border-blue-500 font-bold flex hover:scale-105 duration-300 group overflow-hidden from-blue-600 border-2 to-sky-500 rounded-full  p-2 md:p-4`}
+            disabled={loading}
+            onClick={handleSend}
+            className="bg-gradient-to-r relative shrink-0 hover:shadow-[0_0_30px_blue] hover:border-blue-500 font-bold flex hover:scale-105 duration-300 group overflow-hidden from-blue-600 border-2 to-sky-500 rounded-full p-2 md:p-4 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent translate-x-[-100%] group-hover:translate-x-[100%] duration-500"></div>
             <span className="hover:scale-110 duration-300">Ask</span>

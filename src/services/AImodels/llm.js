@@ -2,7 +2,7 @@ import { ChatGroq } from "@langchain/groq";
 import "dotenv/config";
 const LLM = new ChatGroq({
   apiKey: process.env.GROQ_API,
-  model: "llama-3.3-70b-versatile",
-  temperature: 1,
+  model: "openai/gpt-oss-20b",
+  temperature: 0.1,
 });
 export default LLM;

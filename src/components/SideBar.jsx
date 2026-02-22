@@ -1,15 +1,17 @@
+"use client";
+import { memo } from "react";
 import Link from "next/link";
 import { SignedIn, UserButton } from "@clerk/nextjs";
 import handleToggle from "@/utils/haptics";
 import { createNewSpace } from "@/actions/newchat.action";
 import { useRouter } from "next/navigation";
 import timeAgo from "@/utils/timeago";
-function SideBar({ setShowBar, chatlist, addChatlist }) {
-  const router=useRouter()
+const SideBar = memo(({ setShowBar, chatlist, addChatlist }) => {
+  const router = useRouter();
   const handleNewChat = async () => {
     handleToggle();
     const result = await createNewSpace();
-    if (result.success) { 
+    if (result.success) {
       addChatlist(result.chat);
       router.push(`/ostudio/${result.chat._id}`);
       setShowBar(false);
@@ -22,7 +24,7 @@ function SideBar({ setShowBar, chatlist, addChatlist }) {
       <div className="w-full bg-linear-to-r bg-black p-2 h-screen flex flex-col">
         <div className="flex bg-linear-to-r from-blue-500/20 rounded-b-lg justify-between p-4">
           <div className="flex gap-2 items-center font-bold">
-            <span className="bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg h-7 w-7 p-4 flex justify-center items-center text-xl font-bold">
+            <span className="bg-linear-to-br from-blue-500 to-cyan-500 rounded-lg h-7 w-7 p-4 flex justify-center items-center text-xl font-bold">
               O
             </span>
             <span className="md:text-2xl text-xl">ORION STUDIO</span>
@@ -36,7 +38,7 @@ function SideBar({ setShowBar, chatlist, addChatlist }) {
             </SignedIn>
           </div>
         </div>
-        <div className="h-[3px] bg-linear-to-r mb-4 from-transparent via-rose-500  to-transparent"></div>
+        <div className="h-[2px] bg-linear-to-r mb-4 from-transparent via-red-500  to-transparent"></div>
         {/* <div className="p-2">
           <input className="p-2 outline-none border w-full rounded-lg bg-stone-900/40" placeholder="Search chats" type="text" />
         </div> */}
@@ -44,7 +46,7 @@ function SideBar({ setShowBar, chatlist, addChatlist }) {
         <div className="mb-4 border-dotted w-full ">
           <div
             onClick={handleToggle}
-            className="border-zinc-500 cursor-pointer hover:scale-105 duration-300 px-2 py-1 mx-auto w-fit font-bold border-dashed  rounded-full border-2 bg-zinc-700/40 relative"
+            className="border-zinc-500 text-center cursor-pointer hover:scale-105 duration-300 px-2 py-1 mx-auto w-fit font-bold border-dashed  rounded-full border-2 bg-zinc-700/40 relative"
           >
             Welcome to Orion Studio
           </div>
@@ -56,7 +58,7 @@ function SideBar({ setShowBar, chatlist, addChatlist }) {
           <span className="text-4xl font-extralight">+</span>
           <span className="font-extralight"></span>
           New Chat
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+          <div className="absolute inset-0 bg-linear-to-r from-transparent via-white to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
         </button>
         <h1 className="text-xl my-4 font-bold">Recent chats</h1>
         <div className="overflow-y-auto flex-1 [&::-webkit-scrollbar]:hidden">
@@ -66,9 +68,13 @@ function SideBar({ setShowBar, chatlist, addChatlist }) {
           {chatlist?.length > 0 &&
             chatlist?.map((e) => (
               <div
-                onClick={() => {router.push(`/ostudio/${e._id}`); handleToggle(); setShowBar(false)}}
+                onClick={() => {
+                  router.push(`/ostudio/${e._id}`);
+                  handleToggle();
+                  setShowBar(false);
+                }}
                 key={e._id}
-                className="bg-gray-700/30 mb-2 p-2 hover:text-blue-300  cursor-pointer hover:scale-97 duration-300  border-gray-700 hover:border  py-4 flex items-center gap-2 rounded-xl"
+                className="bg-gray-700/30 mb-2 p-2 hover:text-purple-500  cursor-pointer hover:scale-97 duration-300  hover:border-gray-700 border border-gray-500/40 py-4 flex items-center gap-2 rounded-xl"
               >
                 <span className="text-xl p-2 hover:-rotate-12 duration-200 bg-linear-to-r from-blue-500/20 to-cyan-400/20 rounded-xl">
                   <svg
@@ -95,9 +101,8 @@ function SideBar({ setShowBar, chatlist, addChatlist }) {
             ))}
         </div>
       </div>
-      <div className="bg-linear-to-b from-transparent via-purple-500 to-transparent h-[90vh] w-[3px]"></div>
+      <div className="bg-linear-to-b from-transparent via-red-500 to-transparent h-[90vh] w-[3px]"></div>
     </div>
   );
-}
-
+});
 export default SideBar;

@@ -23,6 +23,7 @@
     "@tavily/core": "^0.7.1",
     "axios": "^1.13.5",
     "cloudinary": "^2.9.0",
+    "copy-to-clipboard": "^3.3.3",
     "dotenv": "^17.2.4",
     "langchain": "^1.2.25",
     "lucide-react": "^0.563.0",
