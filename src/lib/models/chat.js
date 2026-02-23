@@ -25,8 +25,18 @@ const schema = new mongoose.Schema(
           default: "",
         },
         doc: {
-          type: String,
-          default: "",
+          name: {
+            type: String,
+            default: "",
+          },
+          url:{
+            type: String,
+            default: "",
+          },
+          public_id: {
+            type: String,
+            default: "",
+          }
         },
         createdAt: {
           type: Date,

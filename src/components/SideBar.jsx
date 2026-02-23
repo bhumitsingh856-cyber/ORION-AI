@@ -57,7 +57,7 @@ const SideBar = memo(({ setShowBar, chatlist, addChatlist }) => {
         >
           <span className="text-4xl font-extralight">+</span>
           <span className="font-extralight"></span>
-          New Chat
+          New Studio
           <div className="absolute inset-0 bg-linear-to-r from-transparent via-white to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
         </button>
         <h1 className="text-xl my-4 font-bold">Recent chats</h1>

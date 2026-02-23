@@ -19,12 +19,7 @@ const Chat = () => {
   // hooks
   const ref = useRef(null);
   const { studio } = useParams();
-  const [doc, setDoc] = useState({
-    name: "845030",
-    type: "image",
-    url: "https://res.cloudinary.com/dvrhfvoka/image/upload/v1771787535/ky0mk8c8mdjjyup2kqtb.jpg",
-    public_id: "ky0mk8c8mdjjyup2kqtb",
-  });
+  const [doc, setDoc] = useState(null);
   const { user } = useUser();
   const [indent, setIndent] = useState("");
   const [loading, setLoading] = useState(false);
@@ -37,7 +32,7 @@ const Chat = () => {
 
   // functions
   const appendusermessage = () => {
-    addchat({ role: "user", content: prompt });
+    addchat({ role: "user", content: prompt, image: doc?.url ?? "" });
   };
   const scrollToBottom = () => {
     if (typeof window !== "undefined" && ref.current) {
@@ -59,6 +54,7 @@ const Chat = () => {
     try {
       const res = await axios.post(`/api/langchain/${studio}`, {
         prompt: prompt.trim(),
+        doc: doc,
       });
       addchat(res.data);
       setLoading(false);
@@ -97,17 +93,18 @@ const Chat = () => {
           chat?.map((e, idx) =>
             e.role === "user" ? (
               <div key={idx} className="flex gap-2 justify-end ">
-                <span className="bg-linear-to-r from-slate-700 to-slate-800 border border-slate-600/50 max-w-2xs  sm:max-w-4xl p-3 px-4 rounded-br-2xl rounded-l-2xl">
+                <span className="bg-linear-to-r from-slate-700 to-slate-800 border wrap-break-word border-slate-600/50 max-w-2xs  sm:max-w-4xl p-3 px-4 rounded-br-2xl rounded-l-2xl">
                   {e.content}
+                  {e.image && e.image.length > 0 && (
+                    <Image
+                      className="rounded-lg mt-4"
+                      alt="user uploaded image"
+                      src={e?.image}
+                      width={500}
+                      height={300}
+                    ></Image>
+                  )}
                 </span>
-                {e.image && e.image.length > 0 && (
-                  <Image
-                    alt="user uploaded image"
-                    src={e?.image}
-                    width={500}
-                    height={300}
-                  ></Image>
-                )}
                 <span>
                   <img
                     className="md:w-10 md:h-10 h-8 w-8 border-2 border-white/70 rounded-full"
@@ -119,7 +116,7 @@ const Chat = () => {
             ) : (
               <div
                 key={idx}
-                className=" max-w-4xl w-fit p-2 rounded-xl bg-black/30 rounded-bl-2xl rounded-r-2xl"
+                className=" p-2 rounded-xl bg-black/30 rounded-bl-2xl rounded-r-2xl"
               >
                 <div className="flex gap-2 items-center mb-4">
                   <span className="bg-linear-to-br from-blue-500 to-cyan-500 rounded-lg h-7 w-7 p-4 flex justify-center items-center text-xl font-bold">
@@ -127,7 +124,7 @@ const Chat = () => {
                   </span>
                   <span className="font-bold">ORION AI</span>
                 </div>
-                <div>
+                <div >
                   <Formatedllmresponse
                     content={e.content}
                   ></Formatedllmresponse>
@@ -145,12 +142,16 @@ const Chat = () => {
         {doc?.url && (
           <div className="flex max-w-xs w-fit duration-300 relative items-center gap-2 p-2 bg-zinc-700/50 rounded-lg  m-4">
             {doc?.type == "image" ? (
-              <CldImage
-                src={doc.public_id}
-                alt={doc.name}
-                width={500}
-                height={300}
-              />
+              <div>
+                <CldImage
+                  className="rounded-lg"
+                  src={doc.public_id}
+                  alt={doc.name}
+                  width={100}
+                  height={100}
+                />
+                <span className="line-clamp-1">{doc.name}</span>
+              </div>
             ) : (
               <div className="flex gap-2 items-center">
                 <span className="text-2xl">📄</span>
@@ -183,7 +184,7 @@ const Chat = () => {
               }
             }}
             onChange={(e) => setPrompt(e.target.value)}
-            className="w-full break-all field-sizing-content  max-h-52 focus:border-sky-500 hover:shadow-[0_0_10px_gray] focus:shadow-[0_0_10px_blue_inset] bg-stone-800/50 p-2 md:p-4 md:py-4 py-2 border-2 border-blue-500/30 duration-300 outline-none rounded-2xl"
+            className="w-full break-all resize-none  field-sizing-content  max-h-52 focus:border-sky-500 hover:shadow-[0_0_10px_gray] focus:shadow-[0_0_10px_blue_inset] bg-stone-800/50 p-2 md:p-4 md:py-4 py-2 border-2 border-blue-500/30 duration-300 outline-none rounded-2xl"
             placeholder="Ask Orion anything..."
           ></textarea>
           {console.log(doc)}
@@ -250,7 +251,9 @@ const Chat = () => {
               appendusermessage();
               appendaimsg();
               setPrompt("");
+              setDoc(null);
               setLoading(true);
+              console.log("loading", prompt);
             }}
             className={`${prompt.trim().length === 0 ? "cursor-not-allowed" : "cursor-pointer"} bg-linear-to-r relative  shrink-0 hover:shadow-[0_0_30px_blue]  hover:border-blue-500 font-bold flex hover:scale-105 duration-300 group overflow-hidden from-blue-600 border-2 to-sky-500 rounded-full  p-2 md:p-4`}
           >

@@ -5,22 +5,23 @@ import { z } from "zod";
 
 const tavilySearchTool = new TavilySearch({
   tavilyApiKey: process.env.TAVILY_API,
-  maxResults: 1, // Optional: default is 5
+  maxResults: 5, // Optional: default is 5
   searchDepth: "basic", // Optional: "basic" or "advanced"
 });
 const webSearchTool = tool(
   async ({ query }) => {
     try {
       const res = await tavilySearchTool.invoke({ query: query });
-      console.log(res) 
+       
+      if(!res) return "Unable to fetch from web"
       const result = res.results.map((e) => ({
         source: e.url,
         content: e.content,
       }));
-      console.log(result)
       return JSON.stringify(result);
     } catch (e) {
       console.log("Error in web search tool", e.message);
+      return "Something went wrong while exploring web";
     }
   },
   {

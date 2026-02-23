@@ -8,7 +8,7 @@ const imageGenerationTool = tool(
   },
   {
     name: "imageGenerationTool",
-    description: "Generate an image ONLY when the user uses keywords like 'generate image', 'draw', or 'create a picture' etc. Do not use for text-based answers. This will RETURN a URL of the image , you MUST include that URL in your final response",
+    description: "Generate an image ONLY when the user uses keywords like 'generate image', 'draw', or 'create a picture' etc. Do not use for text-based answers. This will RETURN a URL of the image , you MUST include that URL (in ![Description](URL) format) in your final response",
     schema: z.object({
       prompt: z.string().describe("The description of the image to generate"),
     })

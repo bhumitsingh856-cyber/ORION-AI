@@ -20,7 +20,7 @@ const Formatedllmresponse = memo(({ content }) => {
           const language = match ? match[1] : "";
 
           return !inline && language ? (
-            <div className="my-4  rounded-lg border min-w-0 border-gray-700 ">
+            <div className="my-4 rounded-lg border min-w-0 border-gray-700 ">
               {/* Language Label */}
               <div className="bg-stone-900 px-4 py-1.5 text-[10px] tracking-wider text-gray-300 font-mono border- flex justify-between items-center ">
                 {language}
@@ -52,7 +52,7 @@ const Formatedllmresponse = memo(({ content }) => {
             </div>
           ) : (
             <code
-              className="bg-zinc-800  text-sky-400 px-1.5 py-0.5 rounded font-mono text-xs"
+              className="bg-zinc-800 whitespace-pre-wrap text-sky-400  px-1.5 py-0.5 rounded font-mono text-xs"
               {...props}
             >
               {children}
@@ -100,15 +100,19 @@ const Formatedllmresponse = memo(({ content }) => {
 
         // 5. Lists
         ul: ({ children }) => (
-          <ul className="list-disc list-inside my-4 space-y-2">{children}</ul>
+          <ul className="list-disc list-inside  my-4  space-y-2">
+            {children}
+          </ul>
         ),
         ol: ({ children }) => (
-          <ol className="list-decimal list-inside my-4 space-y-2">
+          <ol className="list-decimal list-inside my-4  space-y-2">
             {children}
           </ol>
         ),
         li: ({ children }) => (
-          <li className="ml-2 text-gray-200">{children}</li>
+          <li className="ml-2 text-gray-200 ">
+            {children}
+          </li>
         ),
 
         // 6. Blockquotes
