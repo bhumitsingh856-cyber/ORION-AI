@@ -8,7 +8,7 @@ import "dotenv/config";
 `
 const LLM = new ChatGroq({
   apiKey: process.env.GROQ_API,
-  model: "openai/gpt-oss-20b",
+  model: "openai/gpt-oss-120b",
   temperature: 0.1,
 });
 export default LLM;

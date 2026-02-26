@@ -1,7 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
-import connectDB from "@/lib/db"; 
+import connectDB from "@/lib/db";
 
 connectDB();
 import Navbar from "@/components/Navabar";
@@ -16,8 +16,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Orion AI",
+  title: "Orion Studio",
   description: "A gen AI tool",
+  icons: {
+    icon: "/orion.png",
+    apple: "/orion.png",  
+  },
 };
 
 export default function RootLayout({ children }) {
