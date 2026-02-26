@@ -58,10 +58,10 @@ const Chat = () => {
     console.log("Indent", promptIndent);
     setIndent(promptIndent);
     try {
-      // const res = await axios.post(`/api/langchain/${studio}`, {
-      //   prompt: prompt.trim(),
-      //   doc: doc,
-      // });
+      const res = await axios.post(`/api/langchain/${studio}`, {
+        prompt: prompt.trim(),
+        doc: doc,
+      });
       addchat(res.data);
       setLoading(false);
       setIndent("");
