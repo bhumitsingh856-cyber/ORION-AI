@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🌌 Orion Studio
 
-## Getting Started
+**Orion Studio** is a high-performance, agent-driven AI platform built with **Next.js 15** and **React 19**. It enables users to interact with advanced AI models that can process documents, browse the web, and maintain long-term memory through a specialized RAG (Retrieval-Augmented Generation) architecture.
 
-First, run the development server:
+---
 
+### ✨ Core Features
+
+* **🤖 Multi-Model Intelligence**: Seamless integration with **Google Gemini**, **Groq**, and **Hugging Face**.
+* **🔍 Web-Enabled Agents**: Real-time web searching capabilities powered by **Tavily**.
+* **📄 Document Intelligence**: PDF and Docx analysis using `pdf-parse` and `mammoth`.
+* **💾 Persistent Memory**: Context-aware conversations stored in **MongoDB Atlas** with optimized serverless connection pooling.
+* **⚡ Modern UI**: A sleek, responsive interface built with **Tailwind CSS**, **Framer Motion**, and **Lucide React**.
+* **🔐 Secure Authentication**: User management and protected routes via **Clerk**.
+
+---
+
+### 🛠️ Tech Stack
+
+| Category | Technology |
+| :--- | :--- |
+| **Framework** | Next.js  |
+| **AUTHEMTICATION** | Clerk |
+| **AI Framework** | LangChain |
+| **Database** | MongoDB (Mongoose), Pinecone (Vector Search) |
+| **State Management** | Zustand |
+| **Styling** | Tailwind CSS, Motion |
+| **Tools** | Axios, Cloudinary,Nodemailer , Zod |
+
+---
+
+### 🚀 Getting Started
+
+#### 1. Installation
 ```bash
+git clone [https://github.com/YOUR_USERNAME/orion-studio.git](https://github.com/YOUR_USERNAME/orion-studio.git)
+cd orion-studio
+npm install
+2. Configuration
+Create a .env.local file in the root directory:
+
+Code snippet
+MONGODB_URI=your_mongodb_uri
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_key
+CLERK_SECRET_KEY=your_secret
+GOOGLE_GENERATIVE_AI_API_KEY=your_key
+GROQ_API_KEY=your_key
+TAVILY_API_KEY=your_key
+3. Development
+Bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+🏗️ Architecture Architecture
+Agentic RAG: Implements a Reasoning and Acting (ReAct) pattern to intelligently decide between database queries, web searches, or document analysis.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Real-time Streaming: Instant AI response delivery using modern streaming patterns.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+👨‍💻 Author
+BHUMIT SINGH Student Developer & AI Enthusiast 
