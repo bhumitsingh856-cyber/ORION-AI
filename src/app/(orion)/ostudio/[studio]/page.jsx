@@ -32,7 +32,10 @@ const Chat = () => {
 
   // functions
   const appendusermessage = () => {
-    const isDoc = doc.url.endsWith(".pdf") || doc.url.endsWith(".docx");
+    let isDoc ;
+    if(doc){
+      isDoc=doc.url.endsWith(".pdf") || doc.url.endsWith(".docx");
+    }
     addchat({
       role: "user",
       content: prompt,
@@ -187,14 +190,14 @@ const Chat = () => {
               handleToggle();
             }}
             value={prompt}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                appendusermessage();
-                appendaimsg();
-                setPrompt("");
-                setLoading(true);
-              }
-            }}
+            // onKeyDown={(e) => {
+            //   if (e.key === "Enter" && !e.shiftKey) {
+            //     appendusermessage();
+            //     appendaimsg();
+            //     setPrompt("");
+            //     setLoading(true);
+            //   }
+            // }}
             onChange={(e) => setPrompt(e.target.value)}
             className="w-full break-all resize-none field-sizing-content  max-h-52 focus:border-sky-500 hover:shadow-[0_0_10px_gray] focus:shadow-[0_0_10px_blue_inset] bg-stone-800/50 p-2 md:p-4 md:py-4 py-2 border-2 border-blue-500/30 duration-300 outline-none rounded-2xl"
             placeholder="Ask Orion anything..."
