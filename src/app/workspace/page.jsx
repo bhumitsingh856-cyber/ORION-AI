@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { SignUpButton } from "@clerk/nextjs";
+import { motion, AnimatePresence } from "framer-motion"; 
+import Link from "next/link";
 
 const ExploreWorkspace = () => {
   const [activeDemo, setActiveDemo] = useState("chat");
@@ -99,7 +99,7 @@ const ExploreWorkspace = () => {
             <motion.button
               key={demo.id}
               onClick={() => setActiveDemo(demo.id)}
-              className={`px-4 md:px-6 py-2 md:py-3 rounded-xl text-sm md:text-base font-medium transition-all duration-300 ${
+              className={`px-4 md:px-6 py-2 md:py-3 cursor-pointer rounded-xl text-sm md:text-base font-medium transition-all duration-300 ${
                 activeDemo === demo.id
                   ? `bg-gradient-to-r ${demo.gradient} text-white`
                   : "bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white border border-white/10"
@@ -146,7 +146,7 @@ const ExploreWorkspace = () => {
                     {[
                       {
                         title: "Context-Aware",
-                        desc: "Understands the full conversation history",
+                        desc: "Understands the conversation history",
                       },
                       {
                         title: "Multi-Turn Dialogue",
@@ -214,7 +214,7 @@ const ExploreWorkspace = () => {
                       },
                       {
                         title: "Multi-Format Support",
-                        desc: "PDF, DOCX, TXT, and more",
+                        desc: "PDF, DOCX, PNG, JPG, JPEG",
                       },
                     ].map((feature, idx) => (
                       <motion.div
@@ -412,19 +412,7 @@ const ExploreWorkspace = () => {
                     transition={{ delay: 0.4 }}
                   >
                     <div className="w-7 h-7 md:w-8 md:h-8 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <svg
-                        className="w-4 h-4 md:w-5 md:h-5 text-white"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M13 10V3L4 14h7v7l9-11h-7z"
-                        />
-                      </svg>
+                      <span className="font-bold">O</span>
                     </div>
                     <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl rounded-tl-sm px-4 md:px-6 py-3 md:py-4 max-w-[85%]">
                       <p className="text-white text-xs md:text-sm mb-3">
@@ -644,14 +632,16 @@ const ExploreWorkspace = () => {
             </motion.div>
           </AnimatePresence>
         </div>
-        <SignUpButton forceRedirectUrl="/page1">
+        <Link 
+        href="/page1"
+        >
           <button className="relative cursor-pointer py-2 sm:py-4 w-full justify-center bg-linear-to-r from-blue-600 via-green-500 to-teal-500 border-2 border-blue-200 hover:from-blue-500 hover:via-blue-400 hover:to-cyan-400 text-white font-semibold rounded-xl text-base sm:text-lg transition-all duration-300 flex items-center  hover:scale-105 shadow-[0_0_30px_rgba(59,130,246,0.6)] hover:shadow-[0_0_50px_rgba(59,130,246,0.8)] overflow-hidden group">
        
             <span className="font-extralight"></span>
             Create a Orion Studio account to Proceed
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
           </button>
-        </SignUpButton>
+        </Link>
       </div>
     </div>
   );

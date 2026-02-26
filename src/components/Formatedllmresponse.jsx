@@ -143,13 +143,13 @@ const Formatedllmresponse = memo(({ content }) => {
         // 8. Custom Image Rendering
         img({ node, ...props }) {
           return (
-            <div className="my-4 flex justify-center">
+            <div className="my-4 flex">
               <Image
                 src={props?.src}
                 alt={props?.alt || "AI generated content"}
-                width={800} // This acts as the max-width
-                height={500}
-                className="rounded-xl border border-gray-500 shadow-[0_0_5px_white] object-contain w-full h-auto"
+                width={700} // This acts as the max-width
+                height={400}
+                className="rounded-xl border border-gray-500 shadow-[0_0_5px_white] object-contain  h-auto"
                 unoptimized={true} // Usually better for dynamic Cloudinary AI images
               />
             </div>

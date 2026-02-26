@@ -104,6 +104,12 @@ const Chat = () => {
                       height={300}
                     ></Image>
                   )}
+                  {e.doc && e.doc.url.length > 0 && (
+                    <div className="flex bg-linear-to-r to-stone-700 from-zinc-800 border-2 border-zinc-600 shadow-2xl p-2 rounded-lg mt-4 line-clamp-1 gap-2 items-center">
+                      <span className="text-2xl">📄</span>
+                      <span className="line-clamp-1">{e.doc.name}</span>
+                    </div>
+                  )}
                 </span>
                 <span>
                   <img
@@ -124,7 +130,7 @@ const Chat = () => {
                   </span>
                   <span className="font-bold">ORION AI</span>
                 </div>
-                <div >
+                <div>
                   <Formatedllmresponse
                     content={e.content}
                   ></Formatedllmresponse>
@@ -132,7 +138,7 @@ const Chat = () => {
               </div>
             ),
           )}
-        {loading && <IntentLoadingState loadingType={indent} />}
+        {!loading && <IntentLoadingState loadingType={ "web_search"} />}
         <div ref={ref}></div>
       </main>
       <div className="bg-linear-to-r from-transparent via-gray-600 to-transparent h-[1px]"></div>
@@ -220,7 +226,7 @@ const Chat = () => {
                   "png",
                   "pdf",
                   "docx",
-                  "doc"
+                  "doc",
                 ],
               }}
               onSuccess={(result) => {

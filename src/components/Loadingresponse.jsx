@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function IntentLoadingState({ loadingType }) {
+
   const intentConfig = {
     image_generation: {
       icon: "🎨",
@@ -51,7 +52,7 @@ export default function IntentLoadingState({ loadingType }) {
   const config = intentConfig[loadingType] || intentConfig.analyzing_intent;
 
   return (
-    <div className="relative w-full max-w-2xl mx-auto p-8">
+    <div className="relative w-xs mx-auto p-8">
       {/* DYNAMIC CONTENT AREA */}
       <div className="relative aspect-square max-w-md mx-auto">
         

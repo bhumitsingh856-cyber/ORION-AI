@@ -20,8 +20,8 @@ async function generateImage(prompt) {
       url: url, 
     };
   }catch(e){
-    return "Error in generating Image"
     console.log("Error in image generation",e);
+    return "Error in generating Image"
   }
 }
 

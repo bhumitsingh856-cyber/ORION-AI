@@ -50,7 +50,20 @@ const SideBar = memo(({ setShowBar, chatlist, addChatlist }) => {
           >
             Welcome to Orion Studio
           </div>
+          <div class="flex items-center gap-2 mt-4 sm:gap-4">
+          <Link
+            href="/about-orion"
+            onClick={handleToggle}
+              className="text-[10px] w-full text-center tracking-[.25em] text-blue-400 font-bold uppercase border border-blue-500/30 px-3 py-2 rounded bg-blue-500/10">About Orion</Link>
+          <Link
+          onClick={handleToggle}
+          href="/about-architect"
+          className="text-[10px] w-full text-center tracking-[.25em] text-violet-400 font-bold uppercase border border-violet-500/30 px-3 py-2 rounded bg-violet-500/10">
+            The Architect
+          </Link>
+        </div>  
         </div>
+        
         <button
           onClick={handleNewChat}
           className="relative  py-2 sm:py-2 w-full justify-center bg-linear-to-r from-blue-600 via-blue-500 to-cyan-500 border-2 border-blue-200 hover:from-blue-500 hover:via-blue-400 hover:to-cyan-400 text-white font-semibold rounded-xl text-base sm:text-lg transition-all duration-300 flex items-center  hover:scale-105 shadow-[0_0_30px_rgba(59,130,246,0.6)] hover:shadow-[0_0_50px_rgba(59,130,246,0.8)] overflow-hidden group"
@@ -100,6 +113,7 @@ const SideBar = memo(({ setShowBar, chatlist, addChatlist }) => {
               </div>
             ))}
         </div>
+        
       </div>
       <div className="bg-linear-to-b from-transparent via-red-500 to-transparent h-[90vh] w-[3px]"></div>
     </div>

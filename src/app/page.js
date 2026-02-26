@@ -69,7 +69,7 @@ const LandingPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.9, ease: "backInOut" }}
-              href="/page1"
+              href="/workspace"
               onClick={handleToggle}
               className="relative px-10 sm:px-14 py-4 sm:py-5 bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-purple-600/20 hover:from-purple-600/30 hover:via-pink-600/30 hover:to-purple-600/30 border-2 border-purple-500/50 hover:border-purple-400 cursor-pointer text-gray-200 hover:text-white font-semibold rounded-xl text-base sm:text-lg transition-all duration-300 hover:scale-105 shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:shadow-[0_0_40px_rgba(168,85,247,0.6)] backdrop-blur-sm overflow-hidden group"
             >
@@ -319,19 +319,19 @@ const LandingPage = () => {
             <motion.p
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
-              transition={{ duration: 1, delay: 0.3, ease: "backInOut" }}
+              transition={{ duration: 1, delay: 0.2, ease: "backInOut" }}
               viewport={{ once: false, amount: 0.3 }}
               className="text-gray-500 text-sm sm:text-base mb-4"
             >
               Built with cutting-edge technologies
             </motion.p>
             <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
-              {["NEXT JS", "LANGCHAIN", "PINECONE", "TAVILY", "LLAMA"].map(
+              {["NEXT JS", "LANGCHAIN", "PINECONE", "TAVILY", "GROQ"].map(
                 (tech, index) => (
                   <motion.span
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1  }}
-                    transition={{ duration: 1, delay: 0.5, ease: "backInOut" }}
+                    transition={{ duration: 1, delay: 0.3, ease: "backInOut" }}
                     viewport={{ once: false, amount: 0.3 }}
                     onClick={handleToggle}
                     key={index}
