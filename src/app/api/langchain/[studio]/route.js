@@ -2,7 +2,9 @@ import { NextResponse } from "next/server";
 import { GenAI } from "@/services/Gen AI/core";
 import chat from "@/lib/models/chat";
 import rag from "@/services/Gen AI/rag";
+import connectDB from "@/lib/db";
 export async function POST(req, { params }) {
+  await connectDB(); 
   const { prompt, doc } = await req.json();
   const { studio } = await params;
 
