@@ -34,13 +34,13 @@ const Chat = () => {
   const appendusermessage = () => {
     let isDoc ;
     if(doc){
-      isDoc=doc.url.endsWith(".pdf") || doc.url.endsWith(".docx");
+      isDoc=doc?.url.endsWith(".pdf") || doc.url.endsWith(".docx");
     }
     addchat({
       role: "user",
       content: prompt,
       image: !isDoc ? doc?.url : "",
-      doc: { name: doc.name || "", url: doc.url || "" },
+      doc: { name: doc?.name || "", url: doc?.url || "" },
     });
   };
   const scrollToBottom = () => {
