@@ -3,7 +3,7 @@ import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import connectDB from "@/lib/db";
 
-connectDB();
+await connectDB();
 import Navbar from "@/components/Navabar";
 const geistSans = Geist({
   variable: "--font-geist-sans",
