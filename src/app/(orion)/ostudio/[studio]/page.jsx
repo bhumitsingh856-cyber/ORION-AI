@@ -50,7 +50,6 @@ const Chat = () => {
   };
   const loadChat = async () => {
     const res = await getChat(studio);
-    console.log("chat", res);
     if (res.success) {
       setChat(res.chat);
     }
