@@ -93,7 +93,7 @@ const Chat = () => {
           chat?.map((e, idx) =>
             e.role === "user" ? (
               <div key={idx} className="flex gap-2 justify-end ">
-                <span className="bg-linear-to-r from-slate-700 to-slate-800 border wrap-break-word border-slate-600/50 max-w-2xs  sm:max-w-4xl p-3 px-4 rounded-br-2xl rounded-l-2xl">
+                <span className="bg-linear-to-r wrap-break-word from-slate-700 to-slate-800 border   border-slate-600/50 max-w-2xs  sm:max-w-4xl p-3 px-4 rounded-br-2xl rounded-l-2xl">
                   {e.content}
                   {e.image && e.image.length > 0 && (
                     <Image
@@ -116,7 +116,7 @@ const Chat = () => {
             ) : (
               <div
                 key={idx}
-                className=" p-2 rounded-xl bg-black/30 rounded-bl-2xl rounded-r-2xl"
+                className=" p-2 wrap-break-word rounded-xl bg-black/30 rounded-bl-2xl rounded-r-2xl"
               >
                 <div className="flex gap-2 items-center mb-4">
                   <span className="bg-linear-to-br from-blue-500 to-cyan-500 rounded-lg h-7 w-7 p-4 flex justify-center items-center text-xl font-bold">
@@ -184,7 +184,7 @@ const Chat = () => {
               }
             }}
             onChange={(e) => setPrompt(e.target.value)}
-            className="w-full break-all resize-none  field-sizing-content  max-h-52 focus:border-sky-500 hover:shadow-[0_0_10px_gray] focus:shadow-[0_0_10px_blue_inset] bg-stone-800/50 p-2 md:p-4 md:py-4 py-2 border-2 border-blue-500/30 duration-300 outline-none rounded-2xl"
+            className="w-full break-all resize-none field-sizing-content  max-h-52 focus:border-sky-500 hover:shadow-[0_0_10px_gray] focus:shadow-[0_0_10px_blue_inset] bg-stone-800/50 p-2 md:p-4 md:py-4 py-2 border-2 border-blue-500/30 duration-300 outline-none rounded-2xl"
             placeholder="Ask Orion anything..."
           ></textarea>
           {console.log(doc)}
@@ -219,8 +219,8 @@ const Chat = () => {
                   "jpeg",
                   "png",
                   "pdf",
-                  "doc",
                   "docx",
+                  "doc"
                 ],
               }}
               onSuccess={(result) => {
@@ -253,7 +253,6 @@ const Chat = () => {
               setPrompt("");
               setDoc(null);
               setLoading(true);
-              console.log("loading", prompt);
             }}
             className={`${prompt.trim().length === 0 ? "cursor-not-allowed" : "cursor-pointer"} bg-linear-to-r relative  shrink-0 hover:shadow-[0_0_30px_blue]  hover:border-blue-500 font-bold flex hover:scale-105 duration-300 group overflow-hidden from-blue-600 border-2 to-sky-500 rounded-full  p-2 md:p-4`}
           >

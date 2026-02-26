@@ -31,6 +31,9 @@ Classification: web_search
 User: "summarize the document I uploaded yesterday"
 Classification: RAG_query
 
+User : "Query related to document"
+Classification: RAG_query
+
 User: "explain how photosynthesis works"
 Classification: general_query
 
