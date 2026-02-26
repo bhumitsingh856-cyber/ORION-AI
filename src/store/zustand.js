@@ -14,6 +14,9 @@ export const usestudioStore = create(
     setChatlist: (chatlist) => set({ chatlist }),
     addChatlist: (chat) =>
       set((state) => ({ chatlist: [...state.chatlist, chat] })),
-    // removeChatList: (chat) => set((state) => ({ chatlist: state.chatlist.filter((c) => c.id !== chat.id) })),
+    removeChatList: (chatid) =>
+      set((state) => ({
+        chatlist: state.chatlist.filter((c) => c._id !== chatid),
+      })),
   })),
 );

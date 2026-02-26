@@ -633,7 +633,7 @@ const ExploreWorkspace = () => {
           </AnimatePresence>
         </div>
         <Link 
-        href="/page1"
+        href="/orion"
         >
           <button className="relative cursor-pointer py-2 sm:py-4 w-full justify-center bg-linear-to-r from-blue-600 via-green-500 to-teal-500 border-2 border-blue-200 hover:from-blue-500 hover:via-blue-400 hover:to-cyan-400 text-white font-semibold rounded-xl text-base sm:text-lg transition-all duration-300 flex items-center  hover:scale-105 shadow-[0_0_30px_rgba(59,130,246,0.6)] hover:shadow-[0_0_50px_rgba(59,130,246,0.8)] overflow-hidden group">
        

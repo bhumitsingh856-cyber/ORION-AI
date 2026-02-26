@@ -7,7 +7,6 @@ const pinecone = new PineconeClient({apiKey:process.env.PINECONE_API_KEY})
 const pineconeIndex = pinecone.Index(process.env.PINECONE_INDEX);
 
 const vectorStore=async(id)=>{
-    console.log("id",id)
     const store = await PineconeStore.fromExistingIndex(geminiEmbeddings,{
         pineconeIndex:pineconeIndex,
         maxConcurrency:5,

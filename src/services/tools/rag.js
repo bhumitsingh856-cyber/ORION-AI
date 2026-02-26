@@ -11,7 +11,6 @@ const ragTool = tool(
         return "No relevant information found in the document.";
       }
       const result = data.map((e) => e.pageContent).join("\n");
-      console.log("RAG Tool Result:", result);
       return result;
     } catch (err) {
       console.log("Error in ragTool :", err.message);

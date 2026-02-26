@@ -11,6 +11,7 @@ export default function Layout({ children }) {
   const setChatlist= usestudioStore((state) => (state.setChatlist));
   const chatlist = usestudioStore((state) => (state.chatlist));
   const addChatlist = usestudioStore((state) => (state.addChatlist));
+  const removeChatList = usestudioStore((state) => (state.removeChatList));
   
   const loadchatlist = async ()=>{
     const list =await getchatlist();
@@ -42,7 +43,7 @@ export default function Layout({ children }) {
       <div
         className={`col-span-3 z-20 md:static fixed w-full  md:translate-x-0 duration-300 ease-out ${showBar ? " translate-x-0" : "-translate-x-[200%]"}`}
       >
-        <SideBar setShowBar={setShowBar} chatlist={chatlist} addChatlist={addChatlist}/> 
+        <SideBar setShowBar={setShowBar} chatlist={chatlist} addChatlist={addChatlist} removeChatList={removeChatList}/> 
       </div>
 
       <div className="md:col-span-9 col-span-full">{children}</div>

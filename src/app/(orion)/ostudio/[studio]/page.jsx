@@ -32,7 +32,13 @@ const Chat = () => {
 
   // functions
   const appendusermessage = () => {
-    addchat({ role: "user", content: prompt, image: doc?.url ?? "" });
+    const isDoc = doc.url.endsWith(".pdf") || doc.url.endsWith(".docx");
+    addchat({
+      role: "user",
+      content: prompt,
+      image: !isDoc ? doc?.url : "",
+      doc: { name: doc.name || "", url: doc.url || "" },
+    });
   };
   const scrollToBottom = () => {
     if (typeof window !== "undefined" && ref.current) {
@@ -52,10 +58,10 @@ const Chat = () => {
     console.log("Indent", promptIndent);
     setIndent(promptIndent);
     try {
-      const res = await axios.post(`/api/langchain/${studio}`, {
-        prompt: prompt.trim(),
-        doc: doc,
-      });
+      // const res = await axios.post(`/api/langchain/${studio}`, {
+      //   prompt: prompt.trim(),
+      //   doc: doc,
+      // });
       addchat(res.data);
       setLoading(false);
       setIndent("");
@@ -138,7 +144,7 @@ const Chat = () => {
               </div>
             ),
           )}
-        {!loading && <IntentLoadingState loadingType={ "web_search"} />}
+        {loading && <IntentLoadingState loadingType={indent} />}
         <div ref={ref}></div>
       </main>
       <div className="bg-linear-to-r from-transparent via-gray-600 to-transparent h-[1px]"></div>

@@ -71,7 +71,7 @@ const LandingPage = () => {
               transition={{ duration: 1, delay: 0.9, ease: "backInOut" }}
               href="/workspace"
               onClick={handleToggle}
-              className="relative px-10 sm:px-14 py-4 sm:py-5 bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-purple-600/20 hover:from-purple-600/30 hover:via-pink-600/30 hover:to-purple-600/30 border-2 border-purple-500/50 hover:border-purple-400 cursor-pointer text-gray-200 hover:text-white font-semibold rounded-xl text-base sm:text-lg transition-all duration-300 hover:scale-105 shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:shadow-[0_0_40px_rgba(168,85,247,0.6)] backdrop-blur-sm overflow-hidden group"
+              className="relative px-10 sm:px-14 py-4 active:scale-85 sm:py-5 bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-purple-600/20 hover:from-purple-600/30 hover:via-pink-600/30 hover:to-purple-600/30 border-2 border-purple-500/50 hover:border-purple-400 cursor-pointer text-gray-200 hover:text-white font-semibold rounded-xl text-base sm:text-lg transition-all duration-300 hover:scale-105 shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:shadow-[0_0_40px_rgba(168,85,247,0.6)] backdrop-blur-sm overflow-hidden group"
             >
               <span className="relative z-10">EXPLORE WORKSPACE</span>
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-purple-400 to-transparent -translate-x-full group-hover:translate-x-[100%] transition-transform duration-1000"></div>
