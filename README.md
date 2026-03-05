@@ -52,7 +52,7 @@ npm run dev
 🏗️ Architecture Architecture
 Agentic RAG: Implements a Reasoning and Acting (ReAct) pattern to intelligently decide between database queries, web searches, or document analysis.
 
-Real-time Streaming: Instant AI response delivery using modern streaming patterns.
+Instant AI response delivery using modern patterns.
 
 👨‍💻 Author
 BHUMIT SINGH Student Developer & AI Enthusiast 
